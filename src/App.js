@@ -2,8 +2,9 @@ import React, { useMemo, useState } from "react";
 import "./styles/App.css";
 import PostList from "./components/PostList";
 import PostForm from "./components/PostForm";
-import MySelect from "./components/UI/select/MySelect";
-import MyInput from "./components/UI/input/MyInput";
+import MyPopup from "./components/UI/popup/MyPopup";
+import PostFilter from "./components/PostFilter";
+import MyButton from "./components/UI/button/MyButton";
 
 function App() {
   const [posts, setPosts] = useState([
@@ -14,21 +15,21 @@ function App() {
     { id: 5, title: "My cat", body: "Likes to play" },
   ]);
 
-  const [selectedSort, setSelectedSort] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useState({sort: '', query: ''});
+  const [popup, setPopup] = useState(false)
 
   const sortedPosts = useMemo(() => {
     console.log('work')
-    if(selectedSort) {
-      return [...posts].sort((a, b) => a[selectedSort].localeCompare(b[selectedSort]))
+    if(filter.sort) {
+      return [...posts].sort((a, b) => a[filter.sort].localeCompare(b[filter.sort]))
     } else {
       return posts;
     }
-  }, [selectedSort, posts]);
+  }, [filter.sort, posts]);
 
   const sortedAndSearchedPosts = useMemo(() => {
-    return sortedPosts.filter(post => [post.title.toLowerCase().includes(searchQuery.toLowerCase())])
-  }, [searchQuery, sortedPosts])
+    return sortedPosts.filter(post => [post.title.toLowerCase().includes(filter.query.toLowerCase())])
+  }, [filter.query, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -38,36 +39,20 @@ function App() {
     setPosts(posts.filter(p => p.id !== post.id))
   }
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort);
-  }
-
   return (
     <div className="App">
-      <PostForm create={createPost}/>
+      <MyButton onClick={() => setPopup(true)}>
+        Create user
+      </MyButton>
+      <MyPopup visible={popup} setVisible={setPopup}>
+        <PostForm create={createPost}/>
+      </MyPopup>
       <hr style={{margin: '15px 0'}}/>
-      <div>
-        <MyInput 
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          placeholder='Поиск...'
-        />
-        <MySelect 
-          value={selectedSort}
-          onChange={sortPosts}
-          defaultValue='Сортировка'
-          options={[
-            {value: 'title', name: 'По названию'},
-            {value: 'body', name: 'По описанию'}
-          ]}
-        />
-      </div>
-      {posts.length !== 0
-        ? <PostList delete={deletePost} posts={sortedAndSearchedPosts} title={"Compliments to my future cat"} />
-        : <h1 style={{textAlign: 'center' }}>
-            Posts undefined
-          </h1>
-      }
+      <PostFilter 
+        filter={filter}
+        setFilter={setFilter}
+      />
+        <PostList delete={deletePost} posts={sortedAndSearchedPosts} title="Compliments to my future cat" />
     </div>
   );
 }
