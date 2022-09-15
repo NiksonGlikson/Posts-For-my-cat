@@ -7,7 +7,7 @@ import MyButton from "../components/UI/button/MyButton";
 import { usePosts } from "../hooks/UsePosts";
 import PostService from "../Api/PostService";
 import Loader from "../components/UI/loader/Loader";
-import { UseFetching } from "../hooks/UseFetching";
+import { useFetching } from "../hooks/useFetching";
 import { getPageCount } from "../utils/pages";
 import Pagination from "../components/UI/pagination/Pagination";
 
@@ -20,7 +20,7 @@ function Posts() {
   const [page, setPage] = useState(1);
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
-  const [fetchPosts, isPostsLoading, postError] = UseFetching(async () => {
+  const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page);
     setPosts(response.data);
     const totalCount = response.headers["x-total-count"];

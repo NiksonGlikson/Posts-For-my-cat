@@ -24,17 +24,17 @@ const PostForm = ({create}) => {
             //   {/* Создаем управляемый компонент */}
         <form>
             <MyInput 
-            type="text"
-            placeholder="name post"
-            // функция которая ловит изменения стейта
-            onChange={e => setPost({ ...post, title: e.target.value })}
-            value={post.title}
+              type="text"
+              placeholder="name post"
+              // функция которая ловит изменения стейта
+              onChange={e => setPost({ ...post, title: e.target.value })}
+              value={post.title}
             />
             <MyInput 
-            type="text"
-            placeholder="description"
-            onChange={e => setPost({ ...post, body: e.target.value })}
-            value={post.body}
+              type="text"
+              placeholder="description"
+              onChange={e => setPost({ ...post, body: e.target.value })}
+              value={post.body}
             />
             <MyButton onClick={AddNewPost}>Add post</MyButton>
         </form>
